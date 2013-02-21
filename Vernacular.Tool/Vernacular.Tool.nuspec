@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Rdio, Inc.</authors>
+    <owners>Rdio, Inc.</owners>
+    <licenseUrl>https://github.com/rdio/vernacular/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/rdio/vernacular</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>First release</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>localization i18n gettext</tags>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\*.dll" target="lib/net40" />
+  </files>
+</package>

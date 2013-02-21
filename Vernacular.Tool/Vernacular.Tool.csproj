@@ -130,5 +130,8 @@
       <Name>Vernacular.Potato</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Vernacular.Tool.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
