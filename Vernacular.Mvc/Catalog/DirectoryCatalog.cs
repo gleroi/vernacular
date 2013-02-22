@@ -60,7 +60,7 @@ namespace Vernacular
         void LoadPoFile(string locale)
         {
             if (!String.IsNullOrEmpty(LoadedLocale) && 
-                HttpLanguageHelper.MatchingLocale(locale, LoadedLocale))
+                HttpLanguageHelper.MatchingLocales(locale, LoadedLocale) == LanguageMatchType.Exact)
                 return;
 
             string filepath = GetPoFile(locale);
@@ -88,22 +88,25 @@ namespace Vernacular
             LoadPoFile(CurrentIsoLanguageCode);
 
             //TODO : find and returns the correct translation;
-            throw new NotImplementedException();
+            return LoadedLocale;
         }
 
         public override string CoreGetPluralString(string singularMessage, string pluralMessage, int n)
         {
-            throw new NotImplementedException();
+            //TODO : find and returns the correct translation;
+            return LoadedLocale;
         }
 
         public override string CoreGetGenderString(LanguageGender gender, string masculineMessage, string feminineMessage)
         {
-            throw new NotImplementedException();
+            //TODO : find and returns the correct translation;
+            return LoadedLocale;
         }
 
         public override string CoreGetPluralGenderString(LanguageGender gender, string singularMasculineMessage, string pluralMasculineMessage, string singularFeminineMessage, string pluralFeminineMessage, int n)
         {
-            throw new NotImplementedException();
+            //TODO : find and returns the correct translation;
+            return LoadedLocale;
         }
 
         #endregion

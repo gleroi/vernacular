@@ -40,19 +40,17 @@ namespace Vernacular.Mvc.Providers
 
         public static LanguageMatchType MatchingLocales(string locale1, string locale2) 
         {
+            // full match
             if (locale1.Equals(locale2, StringComparison.InvariantCultureIgnoreCase))
-            {
-                // full name match
                 return LanguageMatchType.Exact;
-            }
-            else if (partialMatch == LanguageMatchType.NoMatch)
-            {
-                // partial match, fr-FR => fr
-                string shortLocale = locale2.Substring(0, 2);
-                string shortName = locale1.Substring(0, 2);
-                if (shortName.Equals(shortLocale, StringComparison.InvariantCultureIgnoreCase))
-                    return LanguageMatchType.Partial;
-            }
+
+            // partial match, fr-FR <=> fr
+            string shortLocale2 = locale2.Substring(0, 2);
+            string shortLocale1 = locale1.Substring(0, 2);
+            if (shortLocale1.Equals(shortLocale2, StringComparison.InvariantCultureIgnoreCase))
+                return LanguageMatchType.Partial;
+        
+            // no match
             return LanguageMatchType.NoMatch;
         }
 
