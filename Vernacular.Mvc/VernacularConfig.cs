@@ -14,9 +14,9 @@ namespace Vernacular.Mvc
         public static void Config(Catalog instance, IRequestCultureProvider cultureProvider)
         {
             Catalog.Implementation = instance;
-            CultureInfo cultureInfo = cultureProvider.GetCulture(new HttpContextWrapper(HttpContext.Current));
-            Thread.CurrentThread.CurrentCulture = cultureInfo;
-            Thread.CurrentThread.CurrentUICulture = cultureInfo;
+            IEnumerable<CultureInfo> cultureInfo = cultureProvider.GetCulture(new HttpContextWrapper(HttpContext.Current));
+            Thread.CurrentThread.CurrentCulture = cultureInfo.First();
+            Thread.CurrentThread.CurrentUICulture = cultureInfo.First();
         }
     }
 }

@@ -9,6 +9,6 @@ namespace Vernacular.Mvc.Providers
 {
     public interface IRequestCultureProvider
     {
-        CultureInfo GetCulture(HttpContextBase context);
+        IEnumerable<CultureInfo> GetCulture(HttpContextBase context);
     }
 }
