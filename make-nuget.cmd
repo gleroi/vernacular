@@ -1,1 +1,0 @@
-nuget pack Vernacular.Tool/Vernacular.Tool.csproj

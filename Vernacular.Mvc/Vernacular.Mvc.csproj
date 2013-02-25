@@ -82,7 +82,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="make-mvc-nuget.cmd" />
     <None Include="packages.config" />
+    <None Include="Tools\gettext-0.14.4\gettext.sh" />
+    <None Include="Vernacular.Mvc.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Vernacular.Catalog\Vernacular.Catalog.csproj">
@@ -93,6 +96,34 @@
       <Project>{fa2384c6-90e1-4419-a3ab-fd3318354b8d}</Project>
       <Name>Vernacular.Tool</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tools\gettext-0.14.4\envsubst.exe" />
+    <None Include="Tools\gettext-0.14.4\gettext.exe" />
+    <None Include="Tools\gettext-0.14.4\hostname.exe" />
+    <None Include="Tools\gettext-0.14.4\libexpat.dll" />
+    <None Include="Tools\gettext-0.14.4\libgettextlib.dll" />
+    <None Include="Tools\gettext-0.14.4\libgettextpo.dll" />
+    <None Include="Tools\gettext-0.14.4\libgettextsrc.dll" />
+    <None Include="Tools\gettext-0.14.4\libiconv2.dll" />
+    <None Include="Tools\gettext-0.14.4\libintl3.dll" />
+    <None Include="Tools\gettext-0.14.4\msgattrib.exe" />
+    <None Include="Tools\gettext-0.14.4\msgcat.exe" />
+    <None Include="Tools\gettext-0.14.4\msgcmp.exe" />
+    <None Include="Tools\gettext-0.14.4\msgcomm.exe" />
+    <None Include="Tools\gettext-0.14.4\msgconv.exe" />
+    <None Include="Tools\gettext-0.14.4\msgen.exe" />
+    <None Include="Tools\gettext-0.14.4\msgexec.exe" />
+    <None Include="Tools\gettext-0.14.4\msgfilter.exe" />
+    <None Include="Tools\gettext-0.14.4\msgfmt.exe" />
+    <None Include="Tools\gettext-0.14.4\msggrep.exe" />
+    <None Include="Tools\gettext-0.14.4\msginit.exe" />
+    <None Include="Tools\gettext-0.14.4\msgmerge.exe" />
+    <None Include="Tools\gettext-0.14.4\msgunfmt.exe" />
+    <None Include="Tools\gettext-0.14.4\msguniq.exe" />
+    <None Include="Tools\gettext-0.14.4\ngettext.exe" />
+    <None Include="Tools\gettext-0.14.4\urlget.exe" />
+    <None Include="Tools\gettext-0.14.4\xgettext.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

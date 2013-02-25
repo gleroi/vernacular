@@ -16,7 +16,7 @@ namespace Vernacular
     {
         string DirectoryPath { get; set; }
         string LoadedLocale { get; set; }
-        IEnumerable<ILocalizationUnit> LocaleUnits { get; set; }
+        IEnumerable<LocalizedString> LocaleUnits { get; set; }
         public string FallbackLocale { get; set; }
         
         public const string DefaultFallBackLocale = "en";
@@ -78,7 +78,15 @@ namespace Vernacular
             
             PoParser parser = new PoParser();
             parser.Add(filepath);
-            LocaleUnits = parser.Parse();
+            var units = parser.Parse();
+            List<LocalizedString> messages = new List<LocalizedString>();
+            foreach (ILocalizationUnit u in units)
+            {
+                LocalizedString msg = u as LocalizedString;
+                if (msg != null)
+                    messages.Add(msg);
+            }
+            LocaleUnits = messages;
         }
 
         #region Catalog interface
@@ -87,26 +95,54 @@ namespace Vernacular
         {
             LoadPoFile(CurrentIsoLanguageCode);
 
-            //TODO : find and returns the correct translation;
-            return LoadedLocale;
+            var msg = LocaleUnits.FirstOrDefault(unit => unit.UntranslatedSingularValue == message);
+            if (msg != null)
+                return msg.TranslatedValues.First();
+            else 
+                return message + @" /!\ Untranslated message";
         }
 
         public override string CoreGetPluralString(string singularMessage, string pluralMessage, int n)
         {
-            //TODO : find and returns the correct translation;
-            return LoadedLocale;
+            LoadPoFile(CurrentIsoLanguageCode);
+
+            int pluralOrder = PluralRules.GetOrder(CurrentIsoLanguageCode, n);
+            var msg = LocaleUnits.FirstOrDefault(unit => 
+                unit.UntranslatedSingularValue == singularMessage ||
+                unit.UntranslatedPluralValue == pluralMessage);
+            if (msg != null && msg.TranslatedValues.Length > pluralOrder)
+                return msg.TranslatedValues[pluralOrder];
+            else
+                return (pluralOrder == 0 ? singularMessage : pluralMessage) + @" /!\ Untranslated message";
         }
 
         public override string CoreGetGenderString(LanguageGender gender, string masculineMessage, string feminineMessage)
         {
-            //TODO : find and returns the correct translation;
-            return LoadedLocale;
+            LoadPoFile(CurrentIsoLanguageCode);
+
+            var msg = LocaleUnits.FirstOrDefault(unit => unit.Gender == gender &&
+                (unit.UntranslatedSingularValue == masculineMessage ||
+                 unit.UntranslatedSingularValue == feminineMessage));
+            if (msg != null && msg.TranslatedValues != null)
+                return msg.TranslatedValues.First();
+            else
+                return (gender == LanguageGender.Masculine ? masculineMessage : feminineMessage) + @" /!\ Untranslated message";
         }
 
         public override string CoreGetPluralGenderString(LanguageGender gender, string singularMasculineMessage, string pluralMasculineMessage, string singularFeminineMessage, string pluralFeminineMessage, int n)
         {
-            //TODO : find and returns the correct translation;
-            return LoadedLocale;
+            LoadPoFile(CurrentIsoLanguageCode);
+
+            int pluralOrder = PluralRules.GetOrder(CurrentIsoLanguageCode, n);
+            var msg = LocaleUnits.FirstOrDefault(unit => unit.Gender == gender &&
+                (unit.UntranslatedSingularValue == singularMasculineMessage ||
+                 unit.UntranslatedPluralValue == pluralMasculineMessage ||
+                 unit.UntranslatedSingularValue == singularFeminineMessage ||
+                 unit.UntranslatedPluralValue == pluralFeminineMessage));
+            if (msg != null && msg.TranslatedValues.Length > pluralOrder)
+                return msg.TranslatedValues[pluralOrder];
+            else
+                return (pluralOrder == 1 ? singularMasculineMessage : pluralMasculineMessage) + @" /!\ Untranslated message";
         }
 
         #endregion
