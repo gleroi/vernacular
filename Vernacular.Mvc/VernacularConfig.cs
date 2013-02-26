@@ -9,39 +9,34 @@ using Vernacular.Mvc.Providers;
 
 namespace Vernacular.Mvc
 {
+    /// <summary>
+    /// Configures the Vernacular localization service.
+    /// If you use a culture provider, don't forget to call <c>Vernacular.SetCultures</c> in
+    /// the <c>HttpApplication.PreRequestHandlerExecute </c> event.
+    /// </summary>
     public static class VernacularConfig
     {
         static IRequestCultureProvider CultureProvider { get; set; }
+
+        /// <summary>
+        /// Configure Vernacular localization service
+        /// </summary>
+        /// <param name="instance">Catalog instance to use to obtain translations</param>
+        /// <param name="cultureProvider">a culture provider, pass null if you want to use IIS behavior</param>
         public static void Config(Catalog instance, IRequestCultureProvider cultureProvider)
         {
             Catalog.Implementation = instance;
             CultureProvider = cultureProvider;
-
-            HttpApplication app = HttpContext.Current.ApplicationInstance;
-            app.PreRequestHandlerExecute += app_PreRequestHandlerExecute;
-            app.Disposed += app_Disposed;
-        }
-
-        static void app_Disposed(object sender, EventArgs e)
-        {
-            HttpApplication app = sender as HttpApplication;
-            if (app != null)
-            {
-                app.PreRequestHandlerExecute -= app_PreRequestHandlerExecute;
-                app.Disposed -= app_Disposed;
-            }
-        }
-
-        static void app_PreRequestHandlerExecute(object sender, EventArgs e)
-        {
-            SetCultures();
         }
 
         public static void SetCultures()
         {
-            IEnumerable<CultureInfo> cultureInfo = CultureProvider.GetCulture(new HttpContextWrapper(HttpContext.Current));
-            Thread.CurrentThread.CurrentCulture = cultureInfo.First();
-            Thread.CurrentThread.CurrentUICulture = cultureInfo.First();
+            if (CultureProvider != null)
+            {
+                IEnumerable<CultureInfo> cultureInfo = CultureProvider.GetCulture(new HttpContextWrapper(HttpContext.Current));
+                Thread.CurrentThread.CurrentCulture = cultureInfo.First();
+                Thread.CurrentThread.CurrentUICulture = cultureInfo.First();
+            }
         }
     }
 }
