@@ -18,11 +18,6 @@ namespace Vernacular
         public string FallbackLocale { get; set; }
         
         IDictionary<string, IEnumerable<LocalizedString>> LocaleUnits { get; set; }
-        IEnumerable<string> LoadedLocales
-        {
-            get { return this.LocaleUnits.Keys; }
-        }
-
         
         public const string DefaultFallBackLocale = "en";
 
@@ -30,6 +25,7 @@ namespace Vernacular
         {
             FallbackLocale = DefaultFallBackLocale;
             DirectoryPath = path;
+            LocaleUnits = new Dictionary<string, IEnumerable<LocalizedString>>();
         }
 
         /// <summary>
