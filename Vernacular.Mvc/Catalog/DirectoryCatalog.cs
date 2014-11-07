@@ -15,9 +15,14 @@ namespace Vernacular
     public class DirectoryCatalog : Catalog
     {
         string DirectoryPath { get; set; }
-        string LoadedLocale { get; set; }
-        IEnumerable<LocalizedString> LocaleUnits { get; set; }
         public string FallbackLocale { get; set; }
+        
+        IDictionary<string, IEnumerable<LocalizedString>> LocaleUnits { get; set; }
+        IEnumerable<string> LoadedLocales
+        {
+            get { return this.LocaleUnits.Keys; }
+        }
+
         
         public const string DefaultFallBackLocale = "en";
 
@@ -25,7 +30,6 @@ namespace Vernacular
         {
             FallbackLocale = DefaultFallBackLocale;
             DirectoryPath = path;
-            LoadedLocale = null;
         }
 
         /// <summary>
@@ -57,23 +61,24 @@ namespace Vernacular
             return partialMatch;
         }
 
+        private bool IsLocaleLoaded(string locale)
+        {
+            return this.LocaleUnits.ContainsKey(locale) ||
+                this.LocaleUnits.Keys.Any(loadedLocale => HttpLanguageHelper.MatchingLocales(locale, loadedLocale) == LanguageMatchType.Exact);
+        }
+
         void LoadPoFile(string locale)
         {
-            if (!String.IsNullOrEmpty(LoadedLocale) && 
-                HttpLanguageHelper.MatchingLocales(locale, LoadedLocale) == LanguageMatchType.Exact)
+            if (IsLocaleLoaded(locale))
                 return;
 
             string filepath = GetPoFile(locale);
             if (String.IsNullOrEmpty(filepath)) 
             {
                 filepath = GetPoFile(FallbackLocale);
+                locale = FallbackLocale;
                 if (String.IsNullOrEmpty(filepath))
                     throw new InvalidOperationException("The fallback locale has no PO file. Please use a correct default locale");
-                LoadedLocale = FallbackLocale;
-            }
-            else 
-            {
-                LoadedLocale = locale;
             }
             
             PoParser parser = new PoParser();
@@ -86,7 +91,7 @@ namespace Vernacular
                 if (msg != null)
                     messages.Add(msg);
             }
-            LocaleUnits = messages;
+            LocaleUnits[locale] = messages;
         }
 
         #region Catalog interface
@@ -95,7 +100,7 @@ namespace Vernacular
         {
             LoadPoFile(CurrentIsoLanguageCode);
 
-            var msg = LocaleUnits.FirstOrDefault(unit => unit.UntranslatedSingularValue == message);
+            var msg = LocaleUnits[CurrentIsoLanguageCode].FirstOrDefault(unit => unit.UntranslatedSingularValue == message);
             if (msg != null)
                 return msg.TranslatedValues.First();
             else 
@@ -107,7 +112,7 @@ namespace Vernacular
             LoadPoFile(CurrentIsoLanguageCode);
 
             int pluralOrder = PluralRules.GetOrder(CurrentIsoLanguageCode, n);
-            var msg = LocaleUnits.FirstOrDefault(unit => 
+            var msg = LocaleUnits[CurrentIsoLanguageCode].FirstOrDefault(unit => 
                 unit.UntranslatedSingularValue == singularMessage ||
                 unit.UntranslatedPluralValue == pluralMessage);
             if (msg != null && msg.TranslatedValues.Length > pluralOrder)
@@ -120,7 +125,7 @@ namespace Vernacular
         {
             LoadPoFile(CurrentIsoLanguageCode);
 
-            var msg = LocaleUnits.FirstOrDefault(unit => unit.Gender == gender &&
+            var msg = LocaleUnits[CurrentIsoLanguageCode].FirstOrDefault(unit => unit.Gender == gender &&
                 (unit.UntranslatedSingularValue == masculineMessage ||
                  unit.UntranslatedSingularValue == feminineMessage));
             if (msg != null && msg.TranslatedValues != null)
@@ -134,7 +139,7 @@ namespace Vernacular
             LoadPoFile(CurrentIsoLanguageCode);
 
             int pluralOrder = PluralRules.GetOrder(CurrentIsoLanguageCode, n);
-            var msg = LocaleUnits.FirstOrDefault(unit => unit.Gender == gender &&
+            var msg = LocaleUnits[CurrentIsoLanguageCode].FirstOrDefault(unit => unit.Gender == gender &&
                 (unit.UntranslatedSingularValue == singularMasculineMessage ||
                  unit.UntranslatedPluralValue == pluralMasculineMessage ||
                  unit.UntranslatedSingularValue == singularFeminineMessage ||
