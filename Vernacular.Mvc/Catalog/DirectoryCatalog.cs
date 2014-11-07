@@ -101,7 +101,7 @@ namespace Vernacular
             LoadPoFile(CurrentIsoLanguageCode);
 
             var msg = LocaleUnits[CurrentIsoLanguageCode].FirstOrDefault(unit => unit.UntranslatedSingularValue == message);
-            if (msg != null)
+            if (msg != null && msg.TranslatedValues != null)
                 return msg.TranslatedValues.First();
             else 
                 return message + @" /!\ Untranslated message";
@@ -115,7 +115,7 @@ namespace Vernacular
             var msg = LocaleUnits[CurrentIsoLanguageCode].FirstOrDefault(unit => 
                 unit.UntranslatedSingularValue == singularMessage ||
                 unit.UntranslatedPluralValue == pluralMessage);
-            if (msg != null && msg.TranslatedValues.Length > pluralOrder)
+            if (msg != null && msg.TranslatedValues != null && msg.TranslatedValues.Length > pluralOrder)
                 return msg.TranslatedValues[pluralOrder];
             else
                 return (pluralOrder == 0 ? singularMessage : pluralMessage) + @" /!\ Untranslated message";
@@ -144,7 +144,7 @@ namespace Vernacular
                  unit.UntranslatedPluralValue == pluralMasculineMessage ||
                  unit.UntranslatedSingularValue == singularFeminineMessage ||
                  unit.UntranslatedPluralValue == pluralFeminineMessage));
-            if (msg != null && msg.TranslatedValues.Length > pluralOrder)
+            if (msg != null && msg.TranslatedValues != null && msg.TranslatedValues.Length > pluralOrder)
                 return msg.TranslatedValues[pluralOrder];
             else
                 return (pluralOrder == 1 ? singularMasculineMessage : pluralMasculineMessage) + @" /!\ Untranslated message";
